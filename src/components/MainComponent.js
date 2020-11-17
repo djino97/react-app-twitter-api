@@ -84,8 +84,8 @@ export default class MainComponent extends React.Component {
                 else{
                     return false;
                 }
-
             });
+    
             responseTweets = [].concat(this.state.tweets, newTweets);
         }
 
@@ -110,13 +110,11 @@ export default class MainComponent extends React.Component {
         this.setState({isSearchTweets: false, currentCount: 0, isUseProxy: false});
 
         for(let i=0; i<=localStorage.length; i++) {
-            console.log(localStorage.key(i));
             if(localStorage.key(i) !== this.localStorageKeys.headerRequestTweet) {
                 localStorage.removeItem(localStorage.key(i));
             }
         }
     }
-
 
     removeTweetContentComponent(tweetId) {
         let newRemovedTweets = [];

@@ -4,7 +4,6 @@ let newCountTweets;
 const countPackTweets = 20;
 const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
 
-
 export default async function getResponseFromQuery(queryFunc, requestItem, isUseProxy, currentCount=null) {
     let response;
 
@@ -33,19 +32,14 @@ export default async function getResponseFromQuery(queryFunc, requestItem, isUse
 
 
 export async function requestAllTweets(hashtag, proxy, _ = null) {
-    console.log(newCountTweets);
-
     const url = `${proxy}https://api.twitter.com/2/search/adaptive.json` +
         `?cursor=${_currentCount}&count=${newCountTweets}&include_entities=true&q=%23${hashtag}`;
 
     const response = await fetch(url, {
-        headers: _headerRequestTweet,
-        mode: 'cors'
+        headers: _headerRequestTweet
     });
-    console.log(url);
-    _currentCount = newCountTweets;
 
-    console.log(_currentCount);
+    _currentCount = newCountTweets;
     
     return response;
 }
