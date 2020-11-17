@@ -1,5 +1,5 @@
 import React from 'react';
-import {requestAllTweets} from './RequestsToTwitterAPP';
+import {requestAllTweets} from './RequestsToTwitterApi';
 
 export default class HashtagInputPanel extends React.Component {
 
@@ -12,23 +12,29 @@ export default class HashtagInputPanel extends React.Component {
         this.onInputChanged = this.onInputChanged.bind(this);
         this.submitHashtag = this.submitHashtag.bind(this);
         this.validationHashtag = this.validationHashtag.bind(this);
+        this.onChangeCheckbox = this.onChangeCheckbox.bind(this);
 
         this.state = { 
             tweetsIds: [],
             currentCount: 0,
-            descriptionOfValidationError: ''
+            descriptionOfValidationError: '',
+            isUseProxy: false
         };
     }
 
     submitHashtag() {
         if(this.resultValidation) {
             this.props.searchTweets(requestAllTweets,this.inputHashtag)
-            localStorage.removeItem(this.props.localStorageKey.removedTweets);
+            localStorage.removeItem(this.props.localStorageKeys.removedTweets);
         }
     }
 
     onInputChanged(event) {
         this.resultValidation = this.validationHashtag(event);
+    }
+
+    onChangeCheckbox() {
+        this.props.setStateProxy();
     }
 
     validationHashtag(event){
@@ -49,7 +55,8 @@ export default class HashtagInputPanel extends React.Component {
         }
         else {
             this.inputHashtag = str;
-
+            validationError = '';
+            this.setState({descriptionOfValidationError: validationError});
             return true;
         }
     }
@@ -69,6 +76,10 @@ export default class HashtagInputPanel extends React.Component {
                 </p>
                 <p className="error-validation-hashtag">
                     {this.state.descriptionOfValidationError}
+                </p>
+                <p className="checkbox">
+                    <input type='checkbox' name='proxy' onChange={this.onChangeCheckbox}/>
+                    <label for='proxy'> use proxy </label>
                 </p>
             </div>
         )

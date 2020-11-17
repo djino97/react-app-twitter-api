@@ -133,7 +133,7 @@
 .hashtag {
     width: 70px;
     height: 60px;
-    margin-left: 85px;
+    margin-left: 40px;
     background-color: #1da1f2;
     color: white;
     font-family: Helvetica,Arial;
@@ -211,4 +211,13 @@
     padding: 10px 15px 10px 15px;
     margin: 0;
     margin-left: 15%;
+}
+
+.checkbox {
+    text-align: -webkit-center;
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+.checkbox input {
+    transform: scale(1.5);
 }

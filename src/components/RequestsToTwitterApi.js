@@ -1,46 +1,57 @@
-let _headerRequestTweet = {}
-let _currentCount
+let _headerRequestTweet = {};
+let _currentCount;
+let newCountTweets;
+const countPackTweets = 20;
+const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
 
-export default async function getResponseFromQuery(queryFunc, requestItem, currentCount=null) {
+
+export default async function getResponseFromQuery(queryFunc, requestItem, isUseProxy, currentCount=null) {
     let response;
 
     _currentCount = currentCount;
+    const proxy = isUseProxy ? proxyUrl : '';
+    newCountTweets = countPackTweets + _currentCount;
+
     _headerRequestTweet = JSON.parse(localStorage.getItem('headerRequestTweet'));
 
     if(_headerRequestTweet === null) {
         await getTokenData();
-        response = await queryFunc(requestItem, currentCount);
+        response = await queryFunc(requestItem, proxy, currentCount);
     }
     
-    response = await queryFunc(requestItem, currentCount);
+    response = await queryFunc(requestItem, proxy, currentCount);
 
-    if(response.status === 403 || response.status === 429) {
+    const status = response.status;
+
+    if(status === 403 || status === 429 || status === 400) {
         await getTokenData();
-        response = await queryFunc(requestItem, currentCount);
+        response = await queryFunc(requestItem, proxy, currentCount);
     }
 
     return  {response: await response.json(), newCurrentCount: _currentCount};
 }
 
 
-export async function requestAllTweets(hashtag, _ = null) {
-    const count = 20;
-    const newCount = count + _currentCount;
+export async function requestAllTweets(hashtag, proxy, _ = null) {
+    console.log(newCountTweets);
 
-    const url = `https://api.twitter.com/2/search/adaptive.json` +
-        `?cursor=${_currentCount}&count=${newCount}&include_entities=true&q=%23${hashtag}`;
+    const url = `${proxy}https://api.twitter.com/2/search/adaptive.json` +
+        `?cursor=${_currentCount}&count=${newCountTweets}&include_entities=true&q=%23${hashtag}`;
 
     const response = await fetch(url, {
-        headers: _headerRequestTweet
+        headers: _headerRequestTweet,
+        mode: 'cors'
     });
+    console.log(url);
+    _currentCount = newCountTweets;
 
-    _currentCount = newCount;
+    console.log(_currentCount);
     
     return response;
 }
 
-export async function requestTweetsByCount(hashtag, countTweets) {
-    const url = `https://api.twitter.com/2/search/adaptive.json` +
+export async function requestTweetsByCount(hashtag, proxy, countTweets) {
+    const url = `${proxy}https://api.twitter.com/2/search/adaptive.json` +
         `?count=${countTweets}&include_entities=true&q=%23${hashtag}`;
 
     const response = await fetch(url, {

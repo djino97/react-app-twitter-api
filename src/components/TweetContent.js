@@ -15,7 +15,9 @@ export default class TweetContent extends React.Component {
     imagesContent(entities) {
         if (entities['media'] !== undefined) {
             return entities.media.map((url, index) =>
-                <div className='tweet-image-div'><img className='tweet-image' key={index} src={url.media_url_https}/></div>
+                <div className='tweet-image-div'>
+                    <img className='tweet-image' key={index} src={url.media_url_https}/>
+                </div>
             );
         }
     }
