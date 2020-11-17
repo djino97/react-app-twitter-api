@@ -120,6 +120,9 @@ export default class MainComponent extends React.Component {
 
     loadNextTweets() {
         this.searchTweets(requestAllTweets);
+        console.log(window.event.clientX);
+        console.log(event.clientX);
+        window.scrollTo(0, 0);
     }
 
     componentWillMount() {
@@ -135,8 +138,6 @@ export default class MainComponent extends React.Component {
                 },() => this.searchTweets());
             }
         }
-
-        window.scrollTo(0, 0);
     }
 
     render() {

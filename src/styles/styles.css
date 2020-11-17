@@ -19,7 +19,7 @@
 }
 
 .user-logo {
-    border-radius: 9999px;
+    border-radius: 100px;
 }
 
 .tweet-image-div {
@@ -84,7 +84,7 @@
     color: white;
     font-size: 20px;
     padding: 0 60px;
-    border-radius: 0 15px 15px 0;
+    border-radius: 0 0 55px 0;
     height: 66px;
     cursor: pointer;
     border: 3px solid #1da1f2;
@@ -115,13 +115,11 @@
 }
 
 .submit-button:hover {
-    border-radius: 0 15px 15px 0;
     background-color: black;
 }
 
 .submit-button:active {
     transform: scale(0.98);
-    border-radius: 0 15px 15px 0;
 }
 
 .submit-button:focus {
@@ -133,7 +131,7 @@
 }
 
 .hashtag {
-    width: 50px;
+    width: 70px;
     height: 60px;
     margin-left: 85px;
     background-color: #1da1f2;
@@ -142,7 +140,7 @@
     border: 3px solid #1da1f2;
     border-right: none;
     font-size: 50px;
-    border-radius: 15px 0 0 15px;
+    border-radius: 55px 0 0 0;
     text-align: center;
 }
 
