@@ -22,7 +22,8 @@ export default class MainComponent extends React.Component {
             removedTweets: 'removedTweets',
             hashtag: 'hashtag',
             currentCountTweets:'CurrentCountTweets',
-            isUseProxy: 'isUseProxy'
+            isUseProxy: 'isUseProxy',
+            headerRequestTweet: 'headerRequestTweet'
         }
 
         this.state = {
@@ -47,7 +48,6 @@ export default class MainComponent extends React.Component {
     }
 
     async searchTweets(func = requestTweetsByCount, newHashtag = null) {
-        console.log(this.state);
         let responseTweets = [];
         
         if(newHashtag === null) {
@@ -68,17 +68,34 @@ export default class MainComponent extends React.Component {
             responseTweets.push(responseTweetsObj.globalObjects.tweets[tweet]);
         }
 
+        let newTweets = [];
+        if(Object.keys(this.state.tweets).length !== 0) {
+            newTweets = responseTweets.filter((tweet) => {
+                let isNotContain = true;
+                
+                for(let i =0; i < Object.keys(this.state.tweets).length; i++) {
+                    if(tweet['id_str'] == this.state.tweets[i].id_str) {
+                        isNotContain = false;
+                    }
+                }
+                if(isNotContain) {
+                    return true;
+                }
+                else{
+                    return false;
+                }
+
+            });
+            responseTweets = [].concat(this.state.tweets, newTweets);
+        }
+
         this.setNewTweets(responseTweets, responseTweetsObj.globalObjects.users);
         this.saveSearchTweets(responseTweets);
-
+        
         localStorage.setItem(this.localStorageKeys.currentCountTweets, parseInt(responseData.newCurrentCount));
     }
 
-    saveSearchTweets(responseTweets) {
-        const tweetsIds = responseTweets.map((tweet) => tweet['id_str']);
-
-        localStorage.setItem(this.localStorageKeys.tweetsIds, JSON.stringify(tweetsIds));
-
+    saveSearchTweets() {
         if(localStorage.getItem(this.localStorageKeys.isUseProxy) === null) {
             localStorage.setItem(this.localStorageKeys.isUseProxy, JSON.stringify(this.state.isUseProxy));
         }
@@ -86,15 +103,18 @@ export default class MainComponent extends React.Component {
 
     loadNextTweets() {
         this.searchTweets(requestAllTweets);
-        let a = Object.keys(this.state.tweets);
-        console.log(this.state.tweets.lenght);
-        console.log(window.event.clientX, window.event.clientY * this.state.currentCount / 5);
         window.scrollTo(window.event.clientX, window.event.clientY * this.state.currentCount / 3);
     }
 
     removeAllTweets() {
         this.setState({isSearchTweets: false, currentCount: 0, isUseProxy: false});
-        localStorage.clear();
+
+        for(let i=0; i<=localStorage.length; i++) {
+            console.log(localStorage.key(i));
+            if(localStorage.key(i) !== this.localStorageKeys.headerRequestTweet) {
+                localStorage.removeItem(localStorage.key(i));
+            }
+        }
     }
 
 
@@ -142,7 +162,7 @@ export default class MainComponent extends React.Component {
     componentWillMount() {
         for(let i=0; i<localStorage.length; i++) {
 
-            if(localStorage.key(i) === this.localStorageKeys.tweetsIds) {
+            if(localStorage.key(i) === this.localStorageKeys.hashtag) {
                 const localStorageHashtag = localStorage.getItem(this.localStorageKeys.hashtag);
 
                 this.hashtag =  localStorageHashtag;

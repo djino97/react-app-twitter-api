@@ -28,15 +28,20 @@ export default class TweetContent extends React.Component {
     }
 
     render() {
+        const imageProfile =  this.props.user === undefined ?
+            null : this.props.user['profile_image_url_https'];
+        const userName = this.props.user === undefined ?
+            null : this.props.user['name'];
+
         return (
             <div className={this.state.showTweetContent ? this.props.blockStyle : 'tweet-block-hidden'}>
                 <div className='user-logo-div'>
-                    <img className='user-logo' src={this.props.user.profile_image_url_https}/>
+                    <img className='user-logo' src={imageProfile}/>
                 </div>
                 <div className="tweet-div-data">
                     <div className='tweet-user-data'>
                         <p>
-                            <span className='user-name'>{this.props.user.name}</span>
+                            <span className='user-name'>{userName}</span>
                             <span>{this.props.tweet.created_at.replace('+0000', '')}</span>
                             <button className='remove-button' onClick={()=> this.removeTweet()}>✖</button>
                         </p>
