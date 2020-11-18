@@ -3,7 +3,7 @@ import HashtagInputPanel from './HashtagInputPanel';
 import TweetContent from './TweetContent';
 import getResponseFromQuery, {
     requestTweetsByCount, requestNextTweetsByCursor
-} from '../Requests/RequestsToTwitterApi';
+} from '../requests/RequestsToTwitterApi';
 import '../styles/styles.css';
 
 export default class MainComponent extends React.Component {
