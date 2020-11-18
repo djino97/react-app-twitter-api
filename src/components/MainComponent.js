@@ -54,6 +54,10 @@ export default class MainComponent extends React.Component {
         })
     }
 
+    // Search for tweets is set by three functions that are set in the parameter "func" 
+    // identified in module "RequestsToTwitterApi": requestTweetsByCount, requestAllTweets,
+    // and requestNextTweetsByCursor.
+    // The method calls functions to search for tweets and calls methods to process input responses with tweets.
     async searchTweets(func = requestTweetsByCount, newHashtag = null) {
         let responseTweets = [];
         
@@ -137,8 +141,10 @@ export default class MainComponent extends React.Component {
         }
     }
 
+    // Calling a method that implements pagination on a tweet page.
+    // Implementing scrolling on the page with fixation on the last tweet before calling the paginated method.
     loadNextTweets() {
-        let body =document.getElementsByTagName("body")[0];
+        const body =document.getElementsByTagName("body")[0];
         const scrollTopElement = body.scrollTop;
 
         this.searchTweets(requestNextTweetsByCursor);
@@ -146,6 +152,7 @@ export default class MainComponent extends React.Component {
         body.scrollTop = scrollTopElement-scrollTopElement/this.state.currentCount/1.5;
     }
 
+    // Remove all tweets from the page and go to the hashtag input state.
     removeAllTweets() {
         this.setState({
             isSearchTweets: false, 
@@ -163,6 +170,7 @@ export default class MainComponent extends React.Component {
         }
     }
 
+    // Remove a tweet from the list of tweets.
     removeTweetContentComponent(tweetId) {
         let newRemovedTweets = [];
         let storyRemovedTweets = JSON.parse(localStorage.getItem(this.localStorageKeys.removedTweets));
@@ -178,6 +186,7 @@ export default class MainComponent extends React.Component {
         localStorage.setItem(this.localStorageKeys.removedTweets, JSON.stringify(newRemovedTweets))
     }
 
+    // Сreating a list of tweets from individual tweet blocks.
     tweetsContent(tweets) {
         this.tweetsComponents = tweets.map((tweet, index) => {
 
@@ -204,6 +213,7 @@ export default class MainComponent extends React.Component {
         return this.tweetsComponents
     }
 
+    // Checking local storage for saved tweet data and restoring page state.
     componentWillMount() {
         for(let i=0; i<localStorage.length; i++) {
 
