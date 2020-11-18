@@ -38,25 +38,21 @@ export default class HashtagInputPanel extends React.Component {
     }
 
     validationHashtag(event){
-        let validationError = '';
-        let str = event.target.value;
+        const str = event.target.value;
 
         if(str === '') {
-            validationError = 'hashtag must not be empty';
-            this.setState({descriptionOfValidationError: validationError});
+            this.setState({descriptionOfValidationError: 'hashtag must not be empty'});
 
             return false;
         }
         else if(new RegExp(' ').test(str)) {
-            validationError = 'hashtag has spaces';
-            this.setState({descriptionOfValidationError: validationError});
+            this.setState({descriptionOfValidationError: 'hashtag has spaces'});
 
             return false;
         }
         else {
             this.inputHashtag = str;
-            validationError = '';
-            this.setState({descriptionOfValidationError: validationError});
+            this.setState({descriptionOfValidationError: ''});
             return true;
         }
     }

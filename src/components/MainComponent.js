@@ -1,7 +1,9 @@
 import React from 'react';
 import HashtagInputPanel from './HashtagInputPanel';
 import TweetContent from './TweetContent';
-import getResponseFromQuery, {requestTweetsByCount, requestAllTweets} from './RequestsToTwitterApi';
+import getResponseFromQuery, {
+    requestTweetsByCount, requestNextTweetsByCursor
+} from './RequestsToTwitterApi';
 import '../styles/styles.css';
 
 export default class MainComponent extends React.Component {
@@ -33,7 +35,8 @@ export default class MainComponent extends React.Component {
             users: {},
             currentCount: 0,
             scrollX: window.screenX,
-            scrollY: window.screenY
+            scrollY: window.screenY,
+            nextCursorRequest: ''
         }
     }
 
@@ -43,8 +46,12 @@ export default class MainComponent extends React.Component {
         }));
     }
 
-    setNewTweets(newTweets, newUsers) {
-        this.setState({tweets:newTweets, users: newUsers, isSearchTweets: true})
+    setNewTweets(newTweets, newUsers, cursorResponse) {
+        this.setState({
+            tweets:newTweets, users: newUsers, 
+            isSearchTweets: true, 
+            nextCursorRequest: cursorResponse
+        })
     }
 
     async searchTweets(func = requestTweetsByCount, newHashtag = null) {
@@ -59,40 +66,67 @@ export default class MainComponent extends React.Component {
         }
 
         const responseData = await getResponseFromQuery(
-                func, this.hashtag, this.state.isUseProxy, this.state.currentCount);
+                func, this.hashtag, this.state.isUseProxy, 
+                this.state.currentCount, this.state.nextCursorRequest);
+
         const responseTweetsObj = await responseData.response;
 
-        this.setState({currentCount: responseData.newCurrentCount});
+        const cursor = this.getCursorFromResponse(responseTweetsObj);
 
         for(let tweet in responseTweetsObj.globalObjects.tweets) {
             responseTweets.push(responseTweetsObj.globalObjects.tweets[tweet]);
         }
 
-        let newTweets = [];
+        let responseUsers = responseTweetsObj.globalObjects.users;
+
         if(Object.keys(this.state.tweets).length !== 0) {
-            newTweets = responseTweets.filter((tweet) => {
-                let isNotContain = true;
-                
-                for(let i =0; i < Object.keys(this.state.tweets).length; i++) {
-                    if(tweet['id_str'] == this.state.tweets[i].id_str) {
-                        isNotContain = false;
-                    }
-                }
-                if(isNotContain) {
-                    return true;
-                }
-                else{
-                    return false;
-                }
-            });
-    
+            const newTweets = this.filterTweets(responseTweets);
+
+            responseUsers = Object.assign(this.state.users, responseUsers);
             responseTweets = [].concat(this.state.tweets, newTweets);
         }
 
-        this.setNewTweets(responseTweets, responseTweetsObj.globalObjects.users);
+        this.setState({currentCount:responseTweets.length});
+        this.setNewTweets(responseTweets, responseUsers, cursor);
         this.saveSearchTweets(responseTweets);
         
         localStorage.setItem(this.localStorageKeys.currentCountTweets, parseInt(responseData.newCurrentCount));
+    }
+
+    getCursorFromResponse(responseTweetsObj) {
+        let cursor = '';
+
+        if(this.state.nextCursorRequest === '' || responseTweetsObj.timeline.instructions[2] === undefined) {
+            cursor = responseTweetsObj.timeline.instructions[0].addEntries.entries[responseTweetsObj.
+                timeline.instructions[0].addEntries.entries.length - 1].content.operation.cursor.value;
+        }
+        else {
+            cursor = responseTweetsObj.timeline.instructions[2].replaceEntry.entry.content.operation.cursor.value;
+        }
+
+        return cursor
+    }
+
+    filterTweets(responseTweets) {
+        let isNotContain;
+
+        const newTweets = responseTweets.filter((tweet) => {
+            isNotContain = true;
+            
+            for(let i =0; i < Object.keys(this.state.tweets).length; i++) {
+                if(tweet.id_str == this.state.tweets[i].id_str) {
+                    isNotContain = false;
+                }
+            }
+            if(isNotContain) {
+                return true;
+            }
+            else{
+                return false;
+            }
+        });
+
+        return newTweets;
     }
 
     saveSearchTweets() {
@@ -102,12 +136,23 @@ export default class MainComponent extends React.Component {
     }
 
     loadNextTweets() {
-        this.searchTweets(requestAllTweets);
-        window.scrollTo(window.event.clientX, window.event.clientY * this.state.currentCount / 3);
+        let body =document.getElementsByTagName("body")[0];
+        const scrollTopElement = body.scrollTop;
+
+        this.searchTweets(requestNextTweetsByCursor);
+
+        body.scrollTop = scrollTopElement-scrollTopElement/this.state.currentCount/1.5;
     }
 
     removeAllTweets() {
-        this.setState({isSearchTweets: false, currentCount: 0, isUseProxy: false});
+        this.setState({
+            isSearchTweets: false, 
+            currentCount: 0, 
+            isUseProxy: false,
+            nextCursorRequest:'',
+            tweets: [],
+            users: {}
+        });
 
         for(let i=0; i<=localStorage.length; i++) {
             if(localStorage.key(i) !== this.localStorageKeys.headerRequestTweet) {
@@ -132,11 +177,10 @@ export default class MainComponent extends React.Component {
     }
 
     tweetsContent(tweets) {
+        let arr = JSON.parse(localStorage.getItem(this.localStorageKeys.removedTweets));
+
         this.tweetsComponents = tweets.map((tweet, index) => {
-
             if(this.state.isSearchTweets) {
-
-                let arr = JSON.parse(localStorage.getItem(this.localStorageKeys.removedTweets));
 
                 if(arr !== null && arr.includes(tweet.id_str))
                     return;
@@ -146,7 +190,7 @@ export default class MainComponent extends React.Component {
             'tweet-block-border': 'tweet-block';
 
             return <TweetContent 
-                        key={index} 
+                        keyTweet={index}
                         tweet={tweet} 
                         blockStyle={style}
                         user={this.state.users[tweet.user_id_str]} 
@@ -162,11 +206,10 @@ export default class MainComponent extends React.Component {
 
             if(localStorage.key(i) === this.localStorageKeys.hashtag) {
                 const localStorageHashtag = localStorage.getItem(this.localStorageKeys.hashtag);
-
-                this.hashtag =  localStorageHashtag;
-
                 const currentCount = parseInt(localStorage.getItem(this.localStorageKeys.currentCountTweets));
                 const isUseProxy = JSON.parse(localStorage.getItem(this.localStorageKeys.isUseProxy));
+
+                this.hashtag =  localStorageHashtag;
 
                 this.setState({
                     currentCount:currentCount,

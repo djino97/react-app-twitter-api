@@ -38,7 +38,7 @@ export default class TweetContent extends React.Component {
                 <div className='user-logo-div'>
                     <img className='user-logo' src={imageProfile}/>
                 </div>
-                <div className="tweet-div-data">
+                <div id ={"tweet"+ this.props.keyTweet} className="tweet-div-data">
                     <div className='tweet-user-data'>
                         <p>
                             <span className='user-name'>{userName}</span>

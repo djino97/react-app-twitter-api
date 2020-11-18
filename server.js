@@ -18,23 +18,23 @@ async function getTwitterToken() {
     
     const twitter = async() => {
         const browser = await puppeteer.launch({headless: true});
-        const page = await browser.newPage();
+        const browserPage = await browser.newPage();
         
-        await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36');
-        await page.goto('https://twitter.com/explore', {
+        await browserPage.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36');
+        await browserPage.goto('https://twitter.com/explore', {
             timeout: 15000
         });
       
         let result = [{code: -1}, null];
       
-        await page.on('requestfinished', async (request) => { 
+        await browserPage.on('requestfinished', async (request) => { 
           if(request.resourceType() == "xhr" && 
                 request.url().indexOf("https://api.twitter.com/2/guide.json") != -1) {
             result.push(request.headers());
           }
         });
       
-        await page.waitFor(3000);
+        await browserPage.waitFor(3000);
       
         await browser.close(); 
       
@@ -42,7 +42,7 @@ async function getTwitterToken() {
     }
       
     app.get('/twitterToken', (req, res) => {
-        console.log(req.ip + ',start request twitter...')
+        console.log(req.ip + 'get token from twitter...')
         twitter().then((result) => {
             res.json(result);
         });

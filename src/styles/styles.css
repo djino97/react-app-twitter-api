@@ -95,10 +95,11 @@
 .back-to-search-button button {
     background-color: black;
     color: white;
-    font-size: 100%;
-    padding: 0 4%;
+    font-size: 18px;
+    padding: 0 45px;
+    margin-top: 2%;
     border-radius: 10px 10px 10px 10px;
-    height: 10%;
+    height: 70px;
     cursor: pointer;
     border: 3px solid #1da1f2;
 }
@@ -150,8 +151,8 @@
     color: #1da1f2;
     font-size: 40px;
     font-family: Helvetica,Arial;
-    margin-top: 22px;
-    margin-bottom: 55px;
+    margin-top: 2%;
+    margin-bottom: 4%;
 }
 
 .flex-components {
