@@ -3,6 +3,7 @@ let _newCountTweets;
 let _nextCursor;
 
 const CountPackTweets = 20;
+const ErrorCodes = [403, 429, 400];
 const ProxyUrl = 'https://cors-anywhere.herokuapp.com/';
 
 /**
@@ -38,9 +39,7 @@ export default async function getResponseFromQuery(queryFunc, requestItem, isUse
     
     response = await queryFunc(requestItem, proxy, currentCountTweets);
 
-    const status = response.status;
-
-    if(status === 403 || status === 429 || status === 400) {
+    if(ErrorCodes.includes(response.status)) {
         await getTokenData();
         response = await queryFunc(requestItem, proxy, currentCountTweets);
     }

@@ -12,7 +12,8 @@ export default class TweetContent extends React.Component {
         this.removeTweet = this.removeTweet.bind(this);
     }
 
-    imagesContent(entities) {
+    // Get image for each tweet
+    getImagesContent(entities) {
         if (entities['media'] !== undefined) {
             return entities.media.map((url, index) =>
                 <div className='tweet-image-div'>
@@ -22,16 +23,15 @@ export default class TweetContent extends React.Component {
         }
     }
 
+    // Remove the selected tweet from the list
     removeTweet() {
         this.setState({showTweetContent: false});
         this.props.removeTweetContentComponent(this.props.tweet.id_str);
     }
 
     render() {
-        const imageProfile =  this.props.user === undefined ?
-            null : this.props.user['profile_image_url_https'];
-        const userName = this.props.user === undefined ?
-            null : this.props.user['name'];
+        const imageProfile = this.props.user['profile_image_url_https'];     
+        const userName = this.props.user['name'];
 
         return (
             <div className={this.state.showTweetContent ? this.props.blockStyle : 'tweet-block-hidden'}>
@@ -49,7 +49,7 @@ export default class TweetContent extends React.Component {
                     <div className='tweet-content-div'>
                         {this.props.tweet.text}
                         <div className='tweet-images-div'>
-                            {this.imagesContent(this.props.tweet.entities)}
+                            {this.getImagesContent(this.props.tweet.entities)}
                         </div>
                         <p className='like'>
                             {this.props.tweet.favorite_count}
