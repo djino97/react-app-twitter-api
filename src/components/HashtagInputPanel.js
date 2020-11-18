@@ -1,5 +1,5 @@
 import React from 'react';
-import {requestAllTweets} from './RequestsToTwitterApi';
+import {requestAllTweets} from '../Requests/RequestsToTwitterApi';
 
 export default class HashtagInputPanel extends React.Component {
 
