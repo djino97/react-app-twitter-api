@@ -25,7 +25,7 @@ export default class MainComponent extends React.Component {
             hashtag: 'hashtag',
             currentCountTweets:'CurrentCountTweets',
             isUseProxy: 'isUseProxy',
-            headerRequestTweet: 'headerRequestTweet'
+            headerRequestTweet: 'headerRequestTweet',
         }
 
         this.state = {
@@ -57,13 +57,7 @@ export default class MainComponent extends React.Component {
     async searchTweets(func = requestTweetsByCount, newHashtag = null) {
         let responseTweets = [];
         
-        if(newHashtag === null) {
-            this.hashtag = localStorage.getItem(this.localStorageKeys.hashtag);
-        }
-        else {
-            this.hashtag = newHashtag;
-            localStorage.setItem(this.localStorageKeys.hashtag, this.hashtag);
-        }
+        this.CheckHashtag(newHashtag);
 
         const responseData = await getResponseFromQuery(
                 func, this.hashtag, this.state.isUseProxy, 
@@ -88,9 +82,17 @@ export default class MainComponent extends React.Component {
 
         this.setState({currentCount:responseTweets.length});
         this.setNewTweets(responseTweets, responseUsers, cursor);
-        this.saveSearchTweets(responseTweets);
-        
-        localStorage.setItem(this.localStorageKeys.currentCountTweets, parseInt(responseData.newCurrentCount));
+        this.saveStatePage(responseData);
+    }
+
+    CheckHashtag(newHashtag) {
+        if(newHashtag === null) {
+            this.hashtag = localStorage.getItem(this.localStorageKeys.hashtag);
+        }
+        else {
+            this.hashtag = newHashtag;
+            localStorage.setItem(this.localStorageKeys.hashtag, this.hashtag);
+        }
     }
 
     getCursorFromResponse(responseTweetsObj) {
@@ -108,10 +110,8 @@ export default class MainComponent extends React.Component {
     }
 
     filterTweets(responseTweets) {
-        let isNotContain;
-
         const newTweets = responseTweets.filter((tweet) => {
-            isNotContain = true;
+            let isNotContain = true;
             
             for(let i =0; i < Object.keys(this.state.tweets).length; i++) {
                 if(tweet.id_str == this.state.tweets[i].id_str) {
@@ -129,7 +129,9 @@ export default class MainComponent extends React.Component {
         return newTweets;
     }
 
-    saveSearchTweets() {
+    saveStatePage(responseData) {
+        localStorage.setItem(this.localStorageKeys.currentCountTweets, parseInt(responseData.newCurrentCount));
+
         if(localStorage.getItem(this.localStorageKeys.isUseProxy) === null) {
             localStorage.setItem(this.localStorageKeys.isUseProxy, JSON.stringify(this.state.isUseProxy));
         }
@@ -154,8 +156,8 @@ export default class MainComponent extends React.Component {
             users: {}
         });
 
-        for(let i=0; i<=localStorage.length; i++) {
-            if(localStorage.key(i) !== this.localStorageKeys.headerRequestTweet) {
+        for(let i=localStorage.length - 1; i>=0; i--) {
+            if(localStorage.key(i) != this.localStorageKeys.headerRequestTweet) {
                 localStorage.removeItem(localStorage.key(i));
             }
         }
@@ -177,10 +179,11 @@ export default class MainComponent extends React.Component {
     }
 
     tweetsContent(tweets) {
-        let arr = JSON.parse(localStorage.getItem(this.localStorageKeys.removedTweets));
-
         this.tweetsComponents = tweets.map((tweet, index) => {
+
             if(this.state.isSearchTweets) {
+
+                let arr = JSON.parse(localStorage.getItem(this.localStorageKeys.removedTweets));
 
                 if(arr !== null && arr.includes(tweet.id_str))
                     return;
@@ -206,14 +209,16 @@ export default class MainComponent extends React.Component {
 
             if(localStorage.key(i) === this.localStorageKeys.hashtag) {
                 const localStorageHashtag = localStorage.getItem(this.localStorageKeys.hashtag);
-                const currentCount = parseInt(localStorage.getItem(this.localStorageKeys.currentCountTweets));
-                const isUseProxy = JSON.parse(localStorage.getItem(this.localStorageKeys.isUseProxy));
 
                 this.hashtag =  localStorageHashtag;
 
+                const currentCount = parseInt(localStorage.getItem(this.localStorageKeys.currentCountTweets));
+                const isUseProxy = JSON.parse(localStorage.getItem(this.localStorageKeys.isUseProxy));
+
                 this.setState({
                     currentCount:currentCount,
-                    isUseProxy: isUseProxy
+                    isUseProxy: isUseProxy,
+                    isSearchTweets: true
                 },() => this.searchTweets());
             }
         }
