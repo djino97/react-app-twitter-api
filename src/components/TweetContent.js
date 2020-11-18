@@ -30,8 +30,11 @@ export default class TweetContent extends React.Component {
     }
 
     render() {
-        const imageProfile = this.props.user['profile_image_url_https'];     
+        const imageProfile = this.props.user['profile_image_url_https'];
+        const imagesTweet = this.getImagesContent(this.props.tweet.entities);
         const userName = this.props.user['name'];
+
+        const styleImagesTweet = imagesTweet === undefined ?  null : {height: '480px'};
 
         return (
             <div className={this.state.showTweetContent ? this.props.blockStyle : 'tweet-block-hidden'}>
@@ -48,13 +51,13 @@ export default class TweetContent extends React.Component {
                     </div>
                     <div className='tweet-content-div'>
                         {this.props.tweet.text}
-                        <div className='tweet-images-div'>
+                        <div className='tweet-images-div' style={styleImagesTweet}>
                             {this.getImagesContent(this.props.tweet.entities)}
                         </div>
+                    </div>
                         <p className='like'>
                             {this.props.tweet.favorite_count}
                         </p>
-                    </div>
                 </div>
             </div>
         )

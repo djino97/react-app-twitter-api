@@ -5,6 +5,7 @@ let _nextCursor;
 const CountPackTweets = 20;
 const ErrorCodes = [403, 429, 400];
 const ProxyUrl = 'https://cors-anywhere.herokuapp.com/';
+const PartOfUrl = window.location.href.split('/').slice(0, 3).join('/');
 
 /**
  * Calls functions to form a header for the following requests and to receive data from Twitter.
@@ -114,8 +115,7 @@ export async function requestTweetsByCount(hashtag, proxy, countTweets) {
  * for generating headers for other requests "_headerRequestTweet".
  */
 async function getTokenData() {
-    const partOfUrl = window.location.href.split('/').slice(0, 3).join('/');
-    const url = `${partOfUrl}/twitterToken`;
+    const url = `${PartOfUrl}/twitterToken`;
 
     let responseObj = null;
 
