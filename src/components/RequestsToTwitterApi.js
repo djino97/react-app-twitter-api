@@ -23,7 +23,6 @@ const ProxyUrl = 'https://cors-anywhere.herokuapp.com/';
  * @returns {Object} -- response query and new  tweet count,
  * example:{response: {}, newCurrentCount: Number}
  */
-
 export default async function getResponseFromQuery(queryFunc, requestItem, isUseProxy, currentCountTweets=null, nextCursor=null) {
     let response;
     const proxy = isUseProxy ? ProxyUrl : '';
