@@ -1,15 +1,18 @@
 import React from 'react';
 
-export default class TweetContent extends React.Component {
+/**
+ * Component for forming the tweet block itself with internal tweet information
+ */
+export default class TweetContent extends React.PureComponent {
 
     constructor(props) {
         super(props)
 
+        this.removeTweet = this.removeTweet.bind(this);
+        
         this.state = {
             showTweetContent: true
         }
-
-        this.removeTweet = this.removeTweet.bind(this);
     }
 
     // Get image for each tweet
@@ -32,32 +35,32 @@ export default class TweetContent extends React.Component {
     render() {
         const imageProfile = this.props.user['profile_image_url_https'];
         const imagesTweet = this.getImagesContent(this.props.tweet.entities);
-        const userName = this.props.user['name'];
+        const userName = this.props.user.name;
 
-        const styleImagesTweet = imagesTweet === undefined ?  null : {height: '480px'};
+        const styleImagesTweet = !imagesTweet ?  {overoverflow:'hidden'} : {height: '480px'};
 
         return (
             <div className={this.state.showTweetContent ? this.props.blockStyle : 'tweet-block-hidden'}>
                 <div className='user-logo-div'>
                     <img className='user-logo' src={imageProfile}/>
                 </div>
-                <div id ={"tweet"+ this.props.keyTweet} className="tweet-div-data">
+                <div id ={"tweet" + this.props.keyTweet} className="tweet-div-data">
                     <div className='tweet-user-data'>
                         <p>
                             <span className='user-name'>{userName}</span>
                             <span>{this.props.tweet.created_at.replace('+0000', '')}</span>
-                            <button className='remove-button' onClick={()=> this.removeTweet()}>✖</button>
+                            <button className='remove-button' onClick={this.removeTweet}>✖</button>
                         </p>
                     </div>
                     <div className='tweet-content-div'>
                         {this.props.tweet.text}
-                        <div className='tweet-images-div' style={styleImagesTweet}>
-                            {this.getImagesContent(this.props.tweet.entities)}
-                        </div>
                     </div>
-                        <p className='like'>
+                    <div className='tweet-images-div' style={styleImagesTweet}>
+                            {imagesTweet}
+                    </div>
+                    <p className='like'>
                             {this.props.tweet.favorite_count}
-                        </p>
+                    </p>
                 </div>
             </div>
         )

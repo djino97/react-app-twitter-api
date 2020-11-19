@@ -1,6 +1,9 @@
 import React from 'react';
 import {requestAllTweets} from '../requests/RequestsToTwitterApi';
 
+/**
+ * A component for forming an interface with data entry fields and a hashtag search button
+ */
 export default class HashtagInputPanel extends React.Component {
 
     constructor(props) {
@@ -22,6 +25,7 @@ export default class HashtagInputPanel extends React.Component {
         };
     }
 
+    // Calling the method for finding tweets on the server for a given hashtag
     submitHashtag() {
         if(this.resultValidation) {
             this.props.searchTweets(requestAllTweets,this.inputHashtag)
@@ -33,6 +37,7 @@ export default class HashtagInputPanel extends React.Component {
         this.resultValidation = this.validationHashtag(event);
     }
 
+    // Сhecks if the checkbox to use a proxy server is checked
     onChangeCheckbox() {
         this.props.setStateProxy();
     }
