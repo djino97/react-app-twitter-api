@@ -14,6 +14,7 @@ import HashtagInputPanel from './HashtagInputPanel';
  * otherwise, all found tweets for this hashtag are displayed.
  */
 export default class MainComponent extends React.Component {
+
     constructor(props) {
         super(props);
 
