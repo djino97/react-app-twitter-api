@@ -1,10 +1,10 @@
 import React from 'react';
-import HashtagInputPanel from './HashtagInputPanel';
+import '../styles/styles.css';
 import TweetContent from './TweetContent';
 import getResponseFromQuery, {
     requestTweetsByCount, requestNextTweetsByCursor
 } from '../requests/RequestsToTwitterApi';
-import '../styles/styles.css';
+import HashtagInputPanel from './HashtagInputPanel';
 
 /**
  * The main component switches between two state -- using the input interface,
@@ -17,14 +17,14 @@ export default class MainComponent extends React.Component {
     constructor(props) {
         super(props);
 
-        this.removeAllTweets = this.removeAllTweets.bind(this);
         this.setNewTweets = this.setNewTweets.bind(this);
-        this.loadNextTweets = this.loadNextTweets.bind(this);
         this.searchTweets = this.searchTweets.bind(this);
         this.setStateProxy = this.setStateProxy.bind(this);
-        this.removeTweetContentComponent = this.removeTweetContentComponent.bind(this);
+        this.loadNextTweets = this.loadNextTweets.bind(this);
+        this.removeAllTweets = this.removeAllTweets.bind(this);
         this.getTweetsPageElements =this.getTweetsPageElements.bind(this);
         this.getInputPanelPageElement = this.getInputPanelPageElement.bind(this);
+        this.removeTweetContentComponent = this.removeTweetContentComponent.bind(this);
 
         this.tweetsComponents = [];
         this.hashtag = '';
@@ -166,7 +166,7 @@ export default class MainComponent extends React.Component {
     // Calling a method that implements pagination on a tweet page.
     // Implementing scrolling on the page with fixation on the last tweet before calling the paginated method.
     loadNextTweets() {
-        const [body] = document.getElementsByTagName("body");
+        const [body] = document.getElementsByTagName('body');
         const scrollTopElement = body.scrollTop;
 
         this.searchTweets(requestNextTweetsByCursor);
@@ -248,6 +248,16 @@ export default class MainComponent extends React.Component {
         }
     }
 
+    render() {
+        return (
+            <div>
+                {this.state.isSearchTweets ?
+                    this.getTweetsPageElements() : this.getInputPanelPageElement()
+                }
+            </div>
+        )
+    }
+
     getTweetsPageElements() {
         return (
             <React.Fragment>
@@ -284,16 +294,6 @@ export default class MainComponent extends React.Component {
                 searchTweets={this.searchTweets}
                 setStateProxy={this.setStateProxy}
             />
-        )
-    }
-
-    render() {
-        return (
-            <div>
-                {this.state.isSearchTweets ?
-                    this.getTweetsPageElements() : this.getInputPanelPageElement()
-                }
-            </div>
         )
     }
 }

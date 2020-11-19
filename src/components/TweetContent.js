@@ -17,7 +17,7 @@ export default class TweetContent extends React.PureComponent {
 
     // Get image for each tweet
     getImagesContent(entities) {
-        if (entities['media'] !== undefined) {
+        if (entities.media) {
             return entities.media.map((url, index) =>
                 <div className='tweet-image-div'>
                     <img className='tweet-image' key={index} src={url.media_url_https}/>
@@ -33,18 +33,18 @@ export default class TweetContent extends React.PureComponent {
     }
 
     render() {
-        const imageProfile = this.props.user['profile_image_url_https'];
-        const imagesTweet = this.getImagesContent(this.props.tweet.entities);
         const userName = this.props.user.name;
+        const tweetsImages = this.getImagesContent(this.props.tweet.entities);
+        const profileImage = this.props.user['profile_image_url_https'];
 
-        const styleImagesTweet = !imagesTweet ?  {overoverflow:'hidden'} : {height: '480px'};
+        const styleImagesTweet = !tweetsImages ?  {overoverflow:'hidden'} : {height: '480px'};
 
         return (
             <div className={this.state.showTweetContent ? this.props.blockStyle : 'tweet-block-hidden'}>
                 <div className='user-logo-div'>
-                    <img className='user-logo' src={imageProfile}/>
+                    <img className='user-logo' src={profileImage}/>
                 </div>
-                <div id ={"tweet" + this.props.keyTweet} className="tweet-div-data">
+                <div id={'tweet' + this.props.keyTweet} className='tweet-div-data'>
                     <div className='tweet-user-data'>
                         <p>
                             <span className='user-name'>{userName}</span>
@@ -55,8 +55,10 @@ export default class TweetContent extends React.PureComponent {
                     <div className='tweet-content-div'>
                         {this.props.tweet.text}
                     </div>
-                    <div className='tweet-images-div' style={styleImagesTweet}>
-                            {imagesTweet}
+                    <div style={{textAlign:'-webkit-center'}}>
+                        <div className='tweet-images-div' style={styleImagesTweet}>
+                            {tweetsImages}
+                        </div>
                     </div>
                     <p className='like'>
                             {this.props.tweet.favorite_count}

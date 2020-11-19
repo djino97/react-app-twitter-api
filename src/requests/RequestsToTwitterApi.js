@@ -1,6 +1,6 @@
-let _headerRequestTweet = {};
-let _newCountTweets;
 let _nextCursor;
+let _newCountTweets;
+let _headerRequestTweet = {};
 
 const CountPackTweets = 20;
 const ErrorCodes = [403, 429, 400];
@@ -110,7 +110,7 @@ async function getTokenData() {
     const url = `${PartOfUrl}/twitterToken`;
 
     let responseObj = null;
-    
+
     while(!responseObj) {
         const response = await fetch(url);
         responseObj = await response.json();
