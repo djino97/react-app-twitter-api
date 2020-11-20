@@ -22,7 +22,7 @@ const PartOfUrl = window.location.href.split('/').slice(0, 3).join('/');
  * @param {Number}currentCountTweets -- current tweet count.
  * @param {Number}nextCursor -- cursor for load scroll content.
  * @returns {Object} -- response query and new  tweet count,
- * example:{response: {}, newCurrentCount: Number}
+ * example:{response: {}, newCurrentCount: Number}.
  */
 export default async function getResponseFromQuery(queryFunc, requestItem, isUseProxy, currentCountTweets=null, nextCursor=null) {
     let response;
@@ -49,6 +49,7 @@ export default async function getResponseFromQuery(queryFunc, requestItem, isUse
 
 /**
  * Returns all tweets with a given number and a specific hashtag.
+ * 
  * @param {String} hashtag 
  * @param {String} proxy 
  * @param {*} _  -- not used.
@@ -68,10 +69,11 @@ export async function requestAllTweets(hashtag, proxy, _ = null) {
  * Returns a list of tweets that is a continuation of the old list of tweets.
  * Gets a new list for a specific list identifier "cursor" with a specific
  * "CountPackTweets" hashtag and number of tweets.
+ * 
  * @param {String} hashtag 
  * @param {String} proxy
  * @param {Number} currentCountTweets -- current tweet count.
- * @returns {Object} - response object;
+ * @returns {Object} - response object.
 */
 export async function requestNextTweetsByCursor(hashtag, proxy, currentCountTweets) {
     const url = `${proxy}https://api.twitter.com/2/search/adaptive.json` +
@@ -86,10 +88,11 @@ export async function requestNextTweetsByCursor(hashtag, proxy, currentCountTwee
 /**
  * Returns a list of tweets and related other objects with a specified number
  * of tweets "countTweets" and hashtag.
+ * 
  * @param {String} hashtag 
  * @param {String} proxy
  * @param {Number} countTweets -- the required number of tweets.
- * @returns {Object} - response object;
+ * @returns {Object} - response object.
  */
 export async function requestTweetsByCount(hashtag, proxy, countTweets) {
     const url = `${proxy}https://api.twitter.com/2/search/adaptive.json` +
@@ -103,7 +106,7 @@ export async function requestTweetsByCount(hashtag, proxy, countTweets) {
 }
 
 /**
- * Returns the received guest token and other additional parameters.
+ * Returns the received guest token and other additional parameters
  * for generating headers for other requests "_headerRequestTweet".
  */
 async function getTokenData() {
