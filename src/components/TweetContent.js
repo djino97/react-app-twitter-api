@@ -24,6 +24,8 @@ export default class TweetContent extends React.PureComponent {
                 </div>
             );
         }
+
+        return null;
     }
 
     // Remove the selected tweet from the list
@@ -35,7 +37,7 @@ export default class TweetContent extends React.PureComponent {
     render() {
         const userName = this.props.user.name;
         const tweetsImages = this.getImagesContent(this.props.tweet.entities);
-        const profileImage = this.props.user['profile_image_url_https'];
+        const profileImage = this.props.user.profile_image_url_https;
 
         const styleImagesTweet = !tweetsImages ?  {overoverflow:'hidden'} : {height: '480px'};
 

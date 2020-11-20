@@ -2,94 +2,97 @@ import React from 'react';
 import HashtagInputPanel from '../HashtagInputPanel';
 import renderer from 'react-test-renderer';
 
-describe('HashtagInputPanel validationHashtag method tests', () => {
-    const component = renderer.create(<HashtagInputPanel/>).getInstance();
-    let hashtagEntryEvent = {
-        target: {
-            value: ''
-        }
-    };
- 
-    it('Should validate hashtag successfully', () => {
-        hashtagEntryEvent.target.value = 'photos';
+describe('HashtagInputPanel Component', () => {
 
-        const isValid = component.validationHashtag(hashtagEntryEvent);                    
+    describe('validationHashtag method tests', () => {
+        const component = renderer.create(<HashtagInputPanel />).getInstance();
+        let hashtagEntryEvent = {
+            target: {
+                value: ''
+            }
+        };
 
-        expect(isValid).toBeTruthy();
-        expect(component.state.descriptionOfValidationError).toEqual('');
-    });
+        it('Should validate hashtag successfully', () => {
+            hashtagEntryEvent.target.value = 'photos';
 
-    it('Should validate hashtag fail when hasgtag is empty', () => {
-        hashtagEntryEvent.target.value = '';
+            const isValid = component.validationHashtag(hashtagEntryEvent);
 
+            expect(isValid).toBeTruthy();
+            expect(component.state.descriptionOfValidationError).toEqual('');
+        });
 
-        const isValid = component.validationHashtag(hashtagEntryEvent);                    
-
-        expect(isValid).toBeFalsy();
-        expect(component.state.descriptionOfValidationError).toEqual('hashtag must not be empty');
-    });
-
-    it('Should validate hashtag fail when hasgtag has space', () => {
-        hashtagEntryEvent.target.value = 'photos ';
+        it('Should validate hashtag fail when hasgtag is empty', () => {
+            hashtagEntryEvent.target.value = '';
 
 
-        const isValid = component.validationHashtag(hashtagEntryEvent);                    
+            const isValid = component.validationHashtag(hashtagEntryEvent);
 
-        expect(isValid).toBeFalsy();
-        expect(component.state.descriptionOfValidationError).toEqual('hashtag has spaces');
-    });
-  })
+            expect(isValid).toBeFalsy();
+            expect(component.state.descriptionOfValidationError).toEqual('hashtag must not be empty');
+        });
 
-  describe('HashtagInputPanel submitHashtag method tests', () => {
-    let component;
-    let searchTweetsMock;
+        it('Should validate hashtag fail when hasgtag has space', () => {
+            hashtagEntryEvent.target.value = 'photos ';
 
-    beforeEach(() => {
-        searchTweetsMock = jest.fn();
-        component = renderer.create(<HashtagInputPanel
-                                        searchTweets={searchTweetsMock}/>
-        ).getInstance();
+
+            const isValid = component.validationHashtag(hashtagEntryEvent);
+
+            expect(isValid).toBeFalsy();
+            expect(component.state.descriptionOfValidationError).toEqual('hashtag has spaces');
+        });
     })
- 
-    it('Should call searchTweets method', () => {
-        
-        component.resultValidation = true;
-        component.submitHashtag();
 
-        expect(searchTweetsMock.mock.calls.length).toEqual(1);
-    });
+    describe('submitHashtag method tests', () => {
+        let component;
+        let searchTweetsMock;
 
-    it('Should not call searchTweets method', () => {
-        
-        component.resultValidation = false;
-        component.submitHashtag();
+        beforeEach(() => {
+            searchTweetsMock = jest.fn();
+            component = renderer.create(<HashtagInputPanel
+                searchTweets={searchTweetsMock} />
+            ).getInstance();
+        })
 
-        expect(searchTweetsMock.mock.calls.length).toEqual(0);
-    });
-  })
+        it('Should call searchTweets method', () => {
 
-  describe('HashtagInputPanel onInputChanged method tests', () => {
-    const component = renderer.create(<HashtagInputPanel/>).getInstance();
+            component.resultValidation = true;
+            component.submitHashtag();
 
-    let hashtagEntryEvent = {
-        target: {
-            value: ''
-        }
-    };
+            expect(searchTweetsMock.mock.calls.length).toEqual(1);
+        });
 
-    it('Should resultValidation is false', () => {
-        hashtagEntryEvent.target.value = '';
+        it('Should not call searchTweets method', () => {
 
-        component.onInputChanged(hashtagEntryEvent);
+            component.resultValidation = false;
+            component.submitHashtag();
 
-        expect(component.resultValidation).toBeFalsy();
-    });
+            expect(searchTweetsMock.mock.calls.length).toEqual(0);
+        });
+    })
 
-    it('Should resultValidation is true', () => {
-        hashtagEntryEvent.target.value = 'photos';
+    describe('onInputChanged method tests', () => {
+        const component = renderer.create(<HashtagInputPanel />).getInstance();
 
-        component.onInputChanged(hashtagEntryEvent);
+        let hashtagEntryEvent = {
+            target: {
+                value: ''
+            }
+        };
 
-        expect(component.resultValidation).toBeTruthy();
-    });
-  })
+        it('Should resultValidation is false', () => {
+            hashtagEntryEvent.target.value = '';
+
+            component.onInputChanged(hashtagEntryEvent);
+
+            expect(component.resultValidation).toBeFalsy();
+        });
+
+        it('Should resultValidation is true', () => {
+            hashtagEntryEvent.target.value = 'photos';
+
+            component.onInputChanged(hashtagEntryEvent);
+
+            expect(component.resultValidation).toBeTruthy();
+        });
+    })
+})
