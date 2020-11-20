@@ -29,7 +29,6 @@ export default class HashtagInputPanel extends React.Component {
     submitHashtag() {
         if(this.resultValidation) {
             this.props.searchTweets(requestAllTweets,this.inputHashtag)
-            localStorage.removeItem(this.props.localStorageKeys.removedTweets);
         }
     }
 

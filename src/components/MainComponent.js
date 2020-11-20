@@ -45,8 +45,6 @@ export default class MainComponent extends React.Component {
             tweets: [],
             users: {},
             currentCount: 0,
-            scrollX: window.screenX,
-            scrollY: window.screenY,
             nextCursorRequest: ''
         };
     }
