@@ -24,7 +24,7 @@ const PartOfUrl = window.location.href.split('/').slice(0, 3).join('/');
  * @returns {Object} -- response query and new  tweet count,
  * example:{response: {}, newCurrentCount: Number}.
  */
-export default async function getResponseFromQuery(queryFunc, requestItem, isUseProxy, currentCountTweets=null, nextCursor=null) {
+export async function getResponseFromQuery(queryFunc, requestItem, isUseProxy, currentCountTweets=null, nextCursor=null) {
     let response;
     const proxy = isUseProxy ? ProxyUrl : '';
 
@@ -58,6 +58,7 @@ export default async function getResponseFromQuery(queryFunc, requestItem, isUse
 export async function requestAllTweets(hashtag, proxy, _ = null) {
     const url = `${proxy}https://api.twitter.com/2/search/adaptive.json` +
         `?count=${CountPackTweets}&include_entities=true&q=%23${hashtag}`;
+        
     _newCountTweets = CountPackTweets;
 
     return fetch(url, {
@@ -80,6 +81,7 @@ export async function requestNextTweetsByCursor(hashtag, proxy, currentCountTwee
         `?cursor=${_nextCursor}&count=${CountPackTweets}&include_entities=true&q=%23${hashtag}`;
 
     _newCountTweets = CountPackTweets + currentCountTweets;
+
     return fetch(url, {
         headers: _headerRequestTweet
     });

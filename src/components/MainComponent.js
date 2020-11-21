@@ -1,8 +1,8 @@
 import React from 'react';
 import '../styles/styles.css';
 import TweetContent from './TweetContent';
-import getResponseFromQuery, {
-    requestTweetsByCount, requestNextTweetsByCursor
+import {
+    getResponseFromQuery, requestTweetsByCount, requestNextTweetsByCursor
 } from '../requests/RequestsToTwitterApi';
 import HashtagInputPanel from './HashtagInputPanel';
 
@@ -55,15 +55,6 @@ export default class MainComponent extends React.Component {
         }));
     }
 
-    setNewTweets(newTweets, newUsers, cursorResponse) {
-        this.setState({
-            tweets: newTweets,
-            users: newUsers,
-            isSearchTweets: true,
-            nextCursorRequest: cursorResponse
-        });
-    }
-
     /**
      * Search for tweets is set by three functions that are set in the parameter "func"
      * identified in module "RequestsToTwitterApi": requestTweetsByCount, requestAllTweets, and requestNextTweetsByCursor.
@@ -80,13 +71,13 @@ export default class MainComponent extends React.Component {
     async searchTweets(func = requestTweetsByCount, newHashtag = null) {
         let responseTweets = [];
 
-        this.CheckHashtag(newHashtag);
+        this.checkHashtag(newHashtag);
 
         const responseData = await getResponseFromQuery(
             func, this.hashtag, this.state.isUseProxy,
             this.state.currentCount, this.state.nextCursorRequest);
 
-        const responseTweetsObj = await responseData.response;
+        const responseTweetsObj = responseData.response;
 
         const cursor = this.getCursorFromResponse(responseTweetsObj);
 
@@ -103,12 +94,11 @@ export default class MainComponent extends React.Component {
             responseTweets = [...this.state.tweets, ...newTweets];
         }
 
-        this.setState({ currentCount: responseTweets.length });
         this.setNewTweets(responseTweets, responseUsers, cursor);
         this.saveStatePage(responseData);
     }
 
-    CheckHashtag(newHashtag) {
+    checkHashtag(newHashtag) {
         if (!newHashtag) {
             this.hashtag = localStorage.getItem(this.localStorageKeys.hashtag);
         }
@@ -152,6 +142,16 @@ export default class MainComponent extends React.Component {
         });
 
         return newTweets;
+    }
+
+    setNewTweets(newTweets, newUsers, cursorResponse) {
+        this.setState({
+            tweets: newTweets,
+            users: newUsers,
+            isSearchTweets: true,
+            nextCursorRequest: cursorResponse,
+            currentCount: newTweets.length
+        });
     }
 
     saveStatePage(responseData) {
@@ -216,6 +216,7 @@ export default class MainComponent extends React.Component {
 
             return (
                 <TweetContent
+                key={index}
                     keyTweet={index}
                     tweet={tweet}
                     blockStyle={style}

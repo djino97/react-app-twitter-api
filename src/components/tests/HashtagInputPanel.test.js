@@ -21,7 +21,7 @@ describe('HashtagInputPanel Component', () => {
             expect(component.state.descriptionOfValidationError).toEqual('');
         });
 
-        it('Should validate hashtag fail when hasgtag is empty', () => {
+        it('Should validate hashtag fail when hashtag is empty', () => {
             hashtagEntryEvent.target.value = '';
 
 
@@ -31,7 +31,7 @@ describe('HashtagInputPanel Component', () => {
             expect(component.state.descriptionOfValidationError).toEqual('hashtag must not be empty');
         });
 
-        it('Should validate hashtag fail when hasgtag has space', () => {
+        it('Should validate hashtag fail when hashtag has empty space', () => {
             hashtagEntryEvent.target.value = 'photos ';
 
 
