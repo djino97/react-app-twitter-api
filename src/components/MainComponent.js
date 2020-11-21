@@ -270,7 +270,7 @@ export default class MainComponent extends React.Component {
                     </h2>
                     <p class='back-to-search-button'>
                         <button onClick={this.removeAllTweets}>
-                            Back to search🔎
+                            Back to search
                         </button>
                     </p>
                 </div>

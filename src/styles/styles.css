@@ -113,6 +113,10 @@
     border: 3px solid #1da1f2;
 }
 
+.back-to-search-button button::after {
+    content: '🔎';
+}
+
 .back-to-search-button button:active {
     transform: scale(0.98);
 }
