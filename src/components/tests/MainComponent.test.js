@@ -51,7 +51,6 @@ describe('MainComponent Component', () => {
         }
     };
 
-
     const timeline = {
         instructions: [
             {
