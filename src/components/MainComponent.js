@@ -216,7 +216,7 @@ export default class MainComponent extends React.Component {
 
             return (
                 <TweetContent
-                key={index}
+                    key={index}
                     keyTweet={index}
                     tweet={tweet}
                     blockStyle={style}
